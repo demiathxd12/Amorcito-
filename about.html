@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerca de - Video Background Website</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline class="video-bg" id="bgVideo">
+        <source src="video/ssstik.io_@wnadereewid_1768090238140.mp4" type="video/mp4">
+        Tu navegador no soporta videos HTML5.
+    </video>
+
+    <!-- Overlay para mejorar legibilidad -->
+    <div class="video-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Mi Sitio</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="about.html" class="nav-link active">Acerca</a></li>
+                <li><a href="contact.html" class="nav-link">Contacto</a></li>
+            </ul>
+            <div class="nav-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="page-content">
+            <div class="content-card glass">
+                <h1>Acerca de Nosotros</h1>
+                <p class="lead">Somos un equipo apasionado por crear experiencias visuales únicas e inmersivas.</p>
+                
+                <div class="about-section">
+                    <h2>Nuestra Misión</h2>
+                    <p>Nuestro objetivo es transformar la forma en que los usuarios experimentan el contenido web, integrando elementos visuales dinámicos que capturan la atención y mejoran la narrativa digital.</p>
+                </div>
+
+                <div class="about-section">
+                    <h2>Qué Hacemos</h2>
+                    <p>Desarrollamos sitios web modernos con video backgrounds que se adaptan perfectamente a cualquier dispositivo, utilizando las últimas tecnologías web para garantizar rendimiento y compatibilidad.</p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="about-item">
+                        <span class="about-number">5+</span>
+                        <span class="about-label">Años de Experiencia</span>
+                    </div>
+                    <div class="about-item">
+                        <span class="about-number">200+</span>
+                        <span class="about-label">Proyectos Completados</span>
+                    </div>
+                    <div class="about-item">
+                        <span class="about-number">50+</span>
+                        <span class="about-label">Clientes Satisfechos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Mi Sitio Web. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

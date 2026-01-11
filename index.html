@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Valeria, mi mundo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-heart {
+            font-size: 4rem;
+            animation: heartbeat 1s ease-in-out infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .loading-text {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.2rem;
+            color: #fff;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #FF69B4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-progress {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9rem;
+            color: #FFB6C1;
+            margin-top: 1rem;
+        }
+
+        /* Responsive styles for opening and loading screens */
+        @media (max-width: 380px) {
+            .loading-heart {
+                font-size: 3rem;
+            }
+            
+            .loading-text {
+                font-size: 1rem;
+            }
+            
+            .loading-spinner {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .loading-progress {
+                font-size: 0.8rem;
+            }
+            
+            .opening-title {
+                font-size: 2rem;
+            }
+            
+            .open-book-btn {
+                padding: 0.75rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .opening-title {
+                font-size: 3.5rem;
+            }
+            
+            .open-book-btn {
+                padding: 1.2rem 3.5rem;
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Video Background */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        /* Floating Hearts Background */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatHeart 4s ease-in-out infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1);
+            }
+        }
+
+        /* Opening Screen */
+        .opening-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .opening-screen.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .opening-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+            z-index: 1002;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .open-book-btn {
+            padding: 0.875rem 2.5rem;
+            font-size: 1.1rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 500;
+            color: #fff;
+            background: rgba(255, 105, 180, 0.8);
+            border: 2px solid #FFB6C1;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 30px rgba(255, 105, 180, 0.4);
+            z-index: 1002;
+        }
+
+        .open-book-btn:hover {
+            background: #FF69B4;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.5);
+        }
+
+        /* Book Container */
+        .book-container {
+            position: relative;
+            width: 90%;
+            max-width: 360px;
+            height: 85vh;
+            max-height: 600px;
+            perspective: 1500px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease;
+            z-index: 1001;
+        }
+
+        .book-container.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (min-width: 400px) {
+            .book-container {
+                height: 80vh;
+                max-height: 580px;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .book-container {
+                width: 85%;
+                max-width: 400px;
+                height: 75vh;
+                max-height: 600px;
+            }
+        }
+
+        /* Book Pages */
+        .book {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #FFFAF0 0%, #FFF8F0 100%);
+            border-radius: 15px;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            box-shadow: inset 0 0 30px rgba(255, 182, 193, 0.1);
+            overflow: hidden;
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(255, 182, 193, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        /* Cover Page Styles */
+        .cover-page {
+            background: linear-gradient(145deg, #FFF0F5 0%, #FFFAF0 50%, #FFE4E1 100%);
+        }
+
+        .cover-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .cover-illustration {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+        }
+
+        .finger-couple {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .finger {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 45% 45%;
+            background: linear-gradient(145deg, #FFDBAC 0%, #F5C6A5 100%);
+            box-shadow: inset -3px -3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .finger-left {
+            left: 0;
+            top: 20px;
+            transform: rotate(-15deg);
+        }
+
+        .finger-right {
+            right: 0;
+            top: 20px;
+            transform: rotate(15deg);
+        }
+
+        .drawn-heart {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+        }
+
+        .drawn-heart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .cover-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: #FF69B4;
+            text-align: center;
+            margin-bottom: 0.3rem;
+            text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.2);
+            animation: fadeInUp 1s ease;
+        }
+
+        .cover-subtitle {
+            font-size: 0.9rem;
+            color: #D4A5A5;
+            text-align: center;
+            font-weight: 300;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+        }
+
+        /* Content Page Styles */
+        .page-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: #FF69B4;
+            text-align: center;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .page-text {
+            font-size: 0.95rem;
+            color: #5A5A5A;
+            text-align: center;
+            line-height: 1.8;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @media (min-width: 400px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            .page-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+            .page-text {
+                font-size: 1.05rem;
+            }
+        }
+
+        /* Final Page Styles */
+        .final-message {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.6rem;
+            color: #FF69B4;
+            text-align: center;
+            animation: pulseSlow 2s ease-in-out infinite;
+        }
+
+        @media (min-width: 400px) {
+            .final-message {
+                font-size: 1.8rem;
+            }
+        }
+
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Navigation Hint */
+        .nav-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: #D4A5A5;
+            opacity: 0.7;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .first-page-hint {
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            color: #FFB6C1;
+            opacity: 0.8;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Page Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Page 3 specific animation */
+        .line-by-line {
+            display: block;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInLine 0.6s ease forwards;
+        }
+
+        @keyframes fadeInLine {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Page 4 shimmer effect */
+        .shimmer-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 70%
+            );
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        /* Final page special effects */
+        .final-page {
+            background: linear-gradient(145deg, #FFF0F5 0%, #FFE4E1 50%, #FFF0F5 100%);
+        }
+
+        .floating-hearts-special {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .special-heart {
+            position: absolute;
+            font-size: 15px;
+            opacity: 0;
+            animation: floatSpecial 5s ease-in-out infinite;
+        }
+
+        @keyframes floatSpecial {
+            0% {
+                opacity: 0;
+                transform: translateY(100%) rotate(0deg);
+            }
+            20% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) rotate(360deg);
+            }
+        }
+
+        .warm-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.4) 0%, transparent 70%);
+            animation: warmPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes warmPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.3);
+                opacity: 0.8;
+            }
+        }
+
+        /* Touch/Click Zones */
+        .touch-zones {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .touch-zone {
+            flex: 1;
+            pointer-events: all;
+        }
+
+        .touch-zone:hover {
+            background: rgba(255, 105, 180, 0.05);
+        }
+
+        /* Page Indicator */
+        .page-indicator {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 1003;
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #FFB6C1;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-dot.active {
+            opacity: 1;
+            background: #FF69B4;
+            transform: scale(1.2);
+        }
+
+        /* Emoji Animations */
+        .emoji-float {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatEmoji 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        .emoji-bounce {
+            position: absolute;
+            font-size: 1.2rem;
+            animation: bounceEmoji 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bounceEmoji {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .emoji-twinkle {
+            position: absolute;
+            font-size: 1.3rem;
+            animation: twinkleEmoji 1.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes twinkleEmoji {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
+        }
+
+        .emoji-spin {
+            position: absolute;
+            font-size: 1.2rem;
+            animation: spinEmoji 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes spinEmoji {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .emoji-pulse {
+            position: absolute;
+            font-size: 1.4rem;
+            animation: pulseEmoji 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulseEmoji {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .emoji-sway {
+            position: absolute;
+            font-size: 1.3rem;
+            animation: swayEmoji 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes swayEmoji {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        /* Page Emoji Containers */
+        .page-emoji {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .page-emoji span {
+            position: absolute;
+            opacity: 0.7;
+        }
+
+        /* Cover Page Emojis */
+        .cover-emojis {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .cover-emoji {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatEmoji 4s ease-in-out infinite;
+        }
+
+        /* Page 1 Emojis */
+        .page1-emojis .emoji {
+            position: absolute;
+            font-size: 1.2rem;
+            animation: bounceEmoji 2.5s ease-in-out infinite;
+        }
+
+        /* Page 2 Emojis */
+        .page2-emojis .emoji {
+            position: absolute;
+            font-size: 1.3rem;
+            animation: pulseEmoji 2s ease-in-out infinite;
+        }
+
+        /* Page 3 Emojis */
+        .page3-emojis .emoji {
+            position: absolute;
+            font-size: 1.2rem;
+            animation: twinkleEmoji 1.8s ease-in-out infinite;
+        }
+
+        /* Page 4 Emojis */
+        .page4-emojis .emoji {
+            position: absolute;
+            font-size: 1.3rem;
+            animation: swayEmoji 2.5s ease-in-out infinite;
+        }
+
+        /* Page 5 Emojis */
+        .page5-emojis .emoji {
+            position: absolute;
+            font-size: 1.4rem;
+            animation: floatEmoji 3s ease-in-out infinite;
+        }
+
+        /* Sparkle Effect */
+        .sparkle {
+            position: absolute;
+            font-size: 1rem;
+            animation: sparkleAnim 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Heart Pulse Effect */
+        .heart-pulse {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: heartPulse 1.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        /* Wing Flap Effect */
+        .wing-flap {
+            position: absolute;
+            font-size: 1.2rem;
+            animation: wingFlap 0.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes wingFlap {
+            0%, 100% { transform: skewX(0deg); }
+            50% { transform: skewX(-15deg); }
+        }
+
+        /* Special Video Page Styles */
+        .special-video-page {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .special-video-page::before {
+            display: none;
+        }
+
+        .special-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        .special-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.3) 0%,
+                rgba(0, 0, 0, 0.5) 50%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
+            z-index: 2;
+        }
+
+        .special-video-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .special-video-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 3px 3px 20px rgba(255, 105, 180, 0.8);
+            animation: glowPulse 2s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                text-shadow: 3px 3px 20px rgba(255, 105, 180, 0.8);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 5px 5px 30px rgba(255, 105, 180, 1), 0 0 40px rgba(255, 182, 193, 0.5);
+                transform: scale(1.02);
+            }
+        }
+
+        .special-video-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+            overflow: hidden;
+        }
+
+        .special-heart-float {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: specialFloatHeart 4s ease-in-out infinite;
+        }
+
+        @keyframes specialFloatHeart {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 0.9;
+            }
+            90% {
+                opacity: 0.9;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1);
+            }
+        }
+
+        .special-video-emoji {
+            position: absolute;
+            font-size: 2rem;
+            z-index: 4;
+            animation: emojiFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes emojiFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(0deg); }
+            75% { transform: translateY(-25px) rotate(-5deg); }
+        }
+
+        .special-nav-hint {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            z-index: 5;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-8px); }
+        }
+
+        @media (max-width: 380px) {
+            .special-video-title {
+                font-size: 2.2rem;
+            }
+            
+            .special-video-emoji {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .special-video-title {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 380px) {
+            .cover-title {
+                font-size: 2rem;
+            }
+            
+            .page-title {
+                font-size: 1.6rem;
+            }
+            
+            .page-text {
+                font-size: 0.9rem;
+                line-height: 1.7;
+            }
+            
+            .cover-image {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .cover-subtitle {
+                font-size: 0.85rem;
+            }
+            
+            .page {
+                padding: 1.2rem;
+            }
+            
+            .nav-hint {
+                font-size: 0.7rem;
+                bottom: 15px;
+            }
+            
+            .first-page-hint {
+                font-size: 0.8rem;
+                bottom: 35px;
+            }
+            
+            .final-message {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 320px) {
+            .book-container {
+                width: 95%;
+                max-width: 300px;
+            }
+            
+            .cover-title {
+                font-size: 1.8rem;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .page-text {
+                font-size: 0.85rem;
+            }
+            
+            .cover-image {
+                width: 110px;
+                height: 110px;
+            }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 600px) and (max-width: 1024px) {
+            .book-container {
+                width: 60%;
+                max-width: 450px;
+                height: 70vh;
+            }
+            
+            .page {
+                padding: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-heart">💕</div>
+        <p class="loading-text">Preparando algo especial...</p>
+        <div class="loading-spinner"></div>
+        <p class="loading-progress" id="loadingProgress">Cargando 0%</p>
+    </div>
+
+    <!-- Video Background -->
+    <video class="video-bg" id="bgVideo" muted playsinline>
+        <source src="user_input_files/ssstik.io_@wnadereewid_1768090238140.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- Floating Hearts Background -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <!-- Opening Screen -->
+    <div class="opening-screen" id="openingScreen">
+        <h1 class="opening-title">Para Valeria</h1>
+        <button class="open-book-btn" id="openBookBtn">Abrir libro</button>
+    </div>
+
+    <!-- Book Container -->
+    <div class="book-container" id="bookContainer">
+        <div class="book" id="book">
+            <!-- Page 0: Cover -->
+            <div class="page cover-page" data-page="0">
+                <div class="cover-emojis">
+                    <span class="cover-emoji" style="top: 8%; left: 8%; animation-delay: 0s;">💕</span>
+                    <span class="cover-emoji" style="top: 12%; right: 12%; animation-delay: 0.5s;">💖</span>
+                    <span class="cover-emoji" style="bottom: 18%; left: 6%; animation-delay: 1s;">💗</span>
+                    <span class="cover-emoji" style="bottom: 12%; right: 8%; animation-delay: 1.5s;">💓</span>
+                    <span class="cover-emoji" style="top: 45%; left: 2%; animation-delay: 0.8s;">🤍</span>
+                    <span class="cover-emoji" style="top: 40%; right: 4%; animation-delay: 1.2s;">💝</span>
+                    <span class="cover-emoji" style="top: 25%; left: 5%; animation-delay: 0.3s;">💘</span>
+                    <span class="cover-emoji" style="top: 22%; right: 6%; animation-delay: 0.9s;">❤️</span>
+                </div>
+                <img src="user_input_files/IMG-20251008-WA0035~2.jpg" alt="Valeria" class="cover-image" onerror="this.style.display='none'">
+                <h1 class="cover-title">Valeria, mi mundo 💕</h1>
+                <p class="cover-subtitle">Un amor que vive incluso en la distancia</p>
+                <p class="first-page-hint">Si estás aburrida, pasa la página 🤍</p>
+                <p class="nav-hint">Desliza para pasar</p>
+            </div>
+
+            <!-- Page 1 -->
+            <div class="page" data-page="1">
+                <div class="page-emoji page1-emojis">
+                    <span class="emoji" style="top: 5%; left: 10%; animation-delay: 0s;">💌</span>
+                    <span class="emoji" style="top: 8%; right: 12%; animation-delay: 0.3s;">💬</span>
+                    <span class="emoji" style="top: 25%; left: 5%; animation-delay: 0.6s;">⏰</span>
+                    <span class="emoji" style="top: 30%; right: 8%; animation-delay: 0.9s;">💝</span>
+                    <span class="emoji" style="bottom: 25%; left: 12%; animation-delay: 1.2s;">💕</span>
+                    <span class="emoji" style="bottom: 30%; right: 15%; animation-delay: 1.5s;">💖</span>
+                    <span class="emoji" style="bottom: 10%; left: 5%; animation-delay: 1.8s;">💗</span>
+                    <span class="emoji" style="bottom: 15%; right: 5%; animation-delay: 2.1s;">🤍</span>
+                </div>
+                <h2 class="page-title">Así es como te demuestro cuánto te amo 💖</h2>
+                <p class="page-text">
+                    Te amo en los detalles pequeños, en los mensajes que te escribo sin razón, en el tiempo que te dedico y en la paciencia que tengo contigo. Aunque no siempre esté a tu lado, mi forma de amar es pensarte, cuidarte y elegirte todos los días. 💕
+                </p>
+                <p class="nav-hint">Desliza para pasar</p>
+            </div>
+
+            <!-- Page 2 -->
+            <div class="page" data-page="2">
+                <div class="page-emoji page2-emojis">
+                    <span class="emoji" style="top: 5%; left: 15%; animation-delay: 0s;">🗺️</span>
+                    <span class="emoji" style="top: 10%; right: 10%; animation-delay: 0.4s;">💔</span>
+                    <span class="emoji" style="top: 20%; left: 8%; animation-delay: 0.8s;">👀</span>
+                    <span class="emoji" style="top: 25%; right: 15%; animation-delay: 1.2s;">💖</span>
+                    <span class="emoji" style="bottom: 30%; left: 10%; animation-delay: 0.2s;">🛤️</span>
+                    <span class="emoji" style="bottom: 25%; right: 8%; animation-delay: 0.6s;">💓</span>
+                    <span class="emoji" style="bottom: 15%; left: 5%; animation-delay: 1s;">❤️</span>
+                    <span class="emoji" style="bottom: 20%; right: 12%; animation-delay: 1.4s;">💗</span>
+                </div>
+                <h2 class="page-title">La distancia no apaga lo que sentimos 💕</h2>
+                <p class="page-text">
+                    La distancia duele, pero no más que las ganas de verte. Cada kilómetro solo confirma que lo nuestro es real, porque a pesar de todo, seguimos aquí, queriéndonos con la misma intensidad. 🤍
+                </p>
+                <p class="nav-hint">Desliza para pasar</p>
+            </div>
+
+            <!-- Page 3 -->
+            <div class="page" data-page="3">
+                <div class="page-emoji page3-emojis">
+                    <span class="emoji" style="top: 5%; left: 10%; animation-delay: 0s;">🧠</span>
+                    <span class="emoji" style="top: 8%; right: 12%; animation-delay: 0.3s;">💭</span>
+                    <span class="emoji" style="top: 20%; left: 5%; animation-delay: 0.6s;">💤</span>
+                    <span class="emoji" style="top: 28%; right: 8%; animation-delay: 0.9s;">🌙</span>
+                    <span class="emoji" style="bottom: 28%; left: 12%; animation-delay: 1.2s;">💭</span>
+                    <span class="emoji" style="bottom: 22%; right: 10%; animation-delay: 1.5s;">🫂</span>
+                    <span class="emoji" style="bottom: 12%; left: 5%; animation-delay: 1.8s;">💕</span>
+                    <span class="emoji" style="bottom: 18%; right: 15%; animation-delay: 2.1s;">💖</span>
+                </div>
+                <h2 class="page-title">Pensarte también es una forma de amar 💗</h2>
+                <p class="page-text" id="page3Text">
+                    <span class="line-by-line" style="animation-delay: 0.1s;">Cuando no puedo abrazarte,</span>
+                    <span class="line-by-line" style="animation-delay: 0.5s;">te abrazo con mis pensamientos. 💕</span>
+                    <span class="line-by-line" style="animation-delay: 0.9s;">Estás en mi mente,</span>
+                    <span class="line-by-line" style="animation-delay: 1.3s;">en mis sueños y en cada momento del día. 🌙</span>
+                    <span class="line-by-line" style="animation-delay: 1.7s;">Pensarte me acerca a ti,</span>
+                    <span class="line-by-line" style="animation-delay: 2.1s;">incluso cuando estás lejos. 💖</span>
+                </p>
+                <p class="nav-hint">Desliza para pasar</p>
+            </div>
+
+            <!-- Page 4 -->
+            <div class="page" data-page="4">
+                <div class="page-emoji page4-emojis">
+                    <span class="emoji" style="top: 5%; left: 12%; animation-delay: 0s;">⏳</span>
+                    <span class="emoji" style="top: 10%; right: 8%; animation-delay: 0.4s;">💪</span>
+                    <span class="emoji" style="top: 22%; left: 5%; animation-delay: 0.8s;">🙏</span>
+                    <span class="emoji" style="top: 26%; right: 14%; animation-delay: 1.2s;">🌱</span>
+                    <span class="emoji" style="bottom: 30%; left: 10%; animation-delay: 0.2s;">💚</span>
+                    <span class="emoji" style="bottom: 25%; right: 12%; animation-delay: 0.6s;">✨</span>
+                    <span class="emoji" style="bottom: 15%; left: 8%; animation-delay: 1s;">💎</span>
+                    <span class="emoji" style="bottom: 20%; right: 6%; animation-delay: 1.4s;">🌟</span>
+                </div>
+                <h2 class="page-title shimmer-effect">Amor paciente que sabe esperar 💝</h2>
+                <p class="page-text">
+                    Nuestro amor no corre, no se rinde ni se desespera. Espera, confía y cree. Porque cuando es verdadero, el tiempo solo lo fortalece y la espera vale la pena. ⏰💕
+                </p>
+                <p class="nav-hint">Desliza para pasar</p>
+            </div>
+
+            <!-- Page 5: Special Video with Audio -->
+            <div class="page special-video-page" data-page="5">
+                <audio id="pageAudio">
+                    <source src="user_input_files/ssstik.io_1768097213789.mp3" type="audio/mpeg">
+                </audio>
+                <video class="special-video-bg" id="specialVideo" muted playsinline loop>
+                    <source src="user_input_files/6f44215fc76d7283ef9c5f5dba71f6d8.mp4" type="video/mp4">
+                </video>
+                <div class="special-video-overlay"></div>
+                <div class="special-video-hearts" id="specialVideoHearts"></div>
+                <div class="special-video-content">
+                    <h2 class="special-video-title">la niñas hermosa 💕</h2>
+                </div>
+                <p class="special-nav-hint">Desliza para pasar</p>
+            </div>
+        </div>
+
+        <!-- Page Indicator -->
+        <div class="page-indicator" id="pageIndicator">
+            <div class="indicator-dot active" data-page="0"></div>
+            <div class="indicator-dot" data-page="1"></div>
+            <div class="indicator-dot" data-page="2"></div>
+            <div class="indicator-dot" data-page="3"></div>
+            <div class="indicator-dot" data-page="4"></div>
+            <div class="indicator-dot" data-page="5"></div>
+        </div>
+    </div>
+
+    <!-- Touch Zones for Navigation -->
+    <div class="touch-zones">
+        <div class="touch-zone" id="prevZone"></div>
+        <div class="touch-zone" id="nextZone"></div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const openingScreen = document.getElementById('openingScreen');
+        const bookContainer = document.getElementById('bookContainer');
+        const book = document.getElementById('book');
+        const openBookBtn = document.getElementById('openBookBtn');
+        const pages = document.querySelectorAll('.page');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const heartsContainer = document.getElementById('heartsContainer');
+        const specialHearts = document.getElementById('specialHearts');
+        const specialVideoHearts = document.getElementById('specialVideoHearts');
+        const prevZone = document.getElementById('prevZone');
+        const nextZone = document.getElementById('nextZone');
+        const bgVideo = document.getElementById('bgVideo');
+        const specialVideo = document.getElementById('specialVideo');
+        const pageAudio = document.getElementById('pageAudio');
+
+        // State
+        let currentPage = 0;
+        const totalPages = pages.length;
+        let isAnimating = false;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        // Create floating hearts in background
+        function createBackgroundHearts() {
+            const heartSymbols = ['❤️', '💕', '💗', '💖', '🤍'];
+            
+            for (let i = 0; i < 8; i++) {
+                setTimeout(function() {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDelay = Math.random() * 4 + 's';
+                    heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                    heartsContainer.appendChild(heart);
+                }, i * 500);
+            }
+        }
+
+        // Create special floating hearts for final page
+        // Create hearts for final page
+        function createSpecialHearts() {
+            const finalHearts = document.getElementById('finalHearts');
+            if (!finalHearts) return;
+            
+            const heartSymbols = ['❤️', '💕', '💗', '💖'];
+            
+            for (let i = 0; i < 6; i++) {
+                setTimeout(function() {
+                    const heart = document.createElement('div');
+                    heart.className = 'special-heart';
+                    heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    heart.style.fontSize = (Math.random() * 10 + 12) + 'px';
+                    finalHearts.appendChild(heart);
+                }, i * 800);
+            }
+        }
+
+        // Create hearts for special video page
+        function createSpecialVideoHearts() {
+            if (!specialVideoHearts) return;
+            
+            const heartSymbols = ['💕', '💖', '💗', '💓', '💝', '💘'];
+            const emojiSymbols = ['✨', '🌟', '💫', '⭐'];
+            
+            // Create floating hearts
+            for (let i = 0; i < 10; i++) {
+                setTimeout(function() {
+                    const heart = document.createElement('div');
+                    heart.className = 'special-heart-float';
+                    heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDelay = Math.random() * 4 + 's';
+                    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    specialVideoHearts.appendChild(heart);
+                }, i * 400);
+            }
+            
+            // Create floating emojis
+            for (let i = 0; i < 6; i++) {
+                setTimeout(function() {
+                    const emoji = document.createElement('div');
+                    emoji.className = 'special-video-emoji';
+                    emoji.textContent = emojiSymbols[Math.floor(Math.random() * emojiSymbols.length)];
+                    emoji.style.left = Math.random() * 100 + '%';
+                    emoji.style.top = Math.random() * 80 + '%';
+                    emoji.style.animationDelay = Math.random() * 5 + 's';
+                    specialVideoHearts.appendChild(emoji);
+                }, i * 600);
+            }
+        }
+
+        // Play special video
+        function playSpecialVideo() {
+            if (specialVideo) {
+                var videoPlayPromise = specialVideo.play();
+                
+                if (videoPlayPromise !== undefined) {
+                    videoPlayPromise.then(function() {
+                        console.log('Special video started playing');
+                    }).catch(function(error) {
+                        console.log('Special video autoplay was prevented');
+                    });
+                }
+            }
+        }
+
+        // Play audio on page 5
+        function playPageAudio() {
+            if (pageAudio) {
+                var audioPlayPromise = pageAudio.play();
+                
+                if (audioPlayPromise !== undefined) {
+                    audioPlayPromise.then(function() {
+                        console.log('Page audio started playing');
+                    }).catch(function(error) {
+                        console.log('Page audio autoplay was prevented');
+                    });
+                }
+            }
+        }
+
+        // Stop audio when leaving page 5
+        function stopPageAudio() {
+            if (pageAudio) {
+                pageAudio.pause();
+                pageAudio.currentTime = 0;
+                console.log('Page audio stopped');
+            }
+        }
+
+        // Loading simulation
+        function simulateLoading() {
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                loadingProgress.textContent = 'Cargando ' + Math.round(progress) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(function() {
+                        loadingScreen.classList.add('hidden');
+                        setTimeout(function() {
+                            openingScreen.classList.add('visible');
+                            // Start video after loading
+                            startVideo();
+                            createBackgroundHearts();
+                        }, 800);
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        // Start video
+        function startVideo() {
+            var videoPlayPromise = bgVideo.play();
+            
+            if (videoPlayPromise !== undefined) {
+                videoPlayPromise.then(function() {
+                    console.log('Video started playing');
+                }).catch(function(error) {
+                    console.log('Video autoplay was prevented');
+                });
+            }
+        }
+
+        // Initialize loading
+        simulateLoading();
+
+        // Open book button handler
+        openBookBtn.addEventListener('click', openBook);
+        openBookBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            openBook();
+        });
+
+        function openBook() {
+            openingScreen.classList.remove('visible');
+            setTimeout(function() {
+                bookContainer.classList.add('visible');
+                // Hearts will be created when navigating to the final page
+            }, 300);
+        }
+
+        // Update page indicator
+        function updateIndicator() {
+            var dots = document.querySelectorAll('.indicator-dot');
+            dots.forEach(function(dot, index) {
+                dot.classList.toggle('active', index === currentPage);
+            });
+        }
+
+        // Go to specific page
+        function goToPage(pageIndex, direction) {
+            if (pageIndex < 0 || pageIndex >= totalPages || isAnimating || pageIndex === currentPage) {
+                return;
+            }
+
+            isAnimating = true;
+            var currentPageEl = document.querySelector('.page[data-page="' + currentPage + '"]');
+            var nextPageEl = document.querySelector('.page[data-page="' + pageIndex + '"]');
+
+            // Hide current page
+            currentPageEl.style.transition = 'all 0.6s ease';
+            currentPageEl.style.opacity = '0';
+            currentPageEl.style.transform = direction === 'next' ? 'rotateY(-90deg) translateX(-50%)' : 'rotateY(90deg) translateX(50%)';
+
+            // Stop audio if leaving page 5
+            if (currentPage === 5) {
+                stopPageAudio();
+            }
+
+            // Show next page
+            setTimeout(function() {
+                nextPageEl.style.transition = 'all 0.6s ease';
+                nextPageEl.style.opacity = '1';
+                nextPageEl.style.transform = 'rotateY(0deg) translateX(0)';
+                
+                currentPage = pageIndex;
+                updateIndicator();
+                
+                // Handle special video page with audio (page 5)
+                if (pageIndex === 5) {
+                    createSpecialVideoHearts();
+                    playSpecialVideo();
+                    playPageAudio();
+                }
+                
+                setTimeout(function() {
+                    isAnimating = false;
+                    // Reset transforms for smooth subsequent animations
+                    pages.forEach(function(page, index) {
+                        if (index !== currentPage) {
+                            page.style.opacity = '0';
+                            page.style.transform = index < currentPage ? 'rotateY(-90deg) translateX(-100%)' : 'rotateY(90deg) translateX(100%)';
+                        }
+                    });
+                }, 600);
+            }, 300);
+        }
+
+        // Touch handlers
+        document.addEventListener('touchstart', handleTouchStart, { passive: true });
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+        var touchThreshold = 50;
+        var touchDirection = null;
+
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchDirection = null;
+        }
+
+        function handleTouchMove(e) {
+            if (touchDirection) return;
+
+            var touchEndX = e.touches[0].clientX;
+            var touchEndY = e.touches[0].clientY;
+            var diffX = touchEndX - touchStartX;
+            var diffY = touchEndY - touchStartY;
+
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > touchThreshold) {
+                touchDirection = diffX > 0 ? 'prev' : 'next';
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchDirection) return;
+
+            if (touchDirection === 'next') {
+                goToPage(currentPage + 1, 'next');
+            } else if (touchDirection === 'prev') {
+                goToPage(currentPage - 1, 'prev');
+            }
+
+            touchDirection = null;
+        }
+
+        // Click handlers for desktop
+        prevZone.addEventListener('click', function() {
+            if (currentPage > 0) {
+                goToPage(currentPage - 1, 'prev');
+            }
+        });
+
+        nextZone.addEventListener('click', function() {
+            if (currentPage < totalPages - 1) {
+                goToPage(currentPage + 1, 'next');
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentPage < totalPages - 1) {
+                    goToPage(currentPage + 1, 'next');
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentPage > 0) {
+                    goToPage(currentPage - 1, 'prev');
+                }
+            }
+        });
+
+        // Initialize page positions
+        pages.forEach(function(page, index) {
+            if (index !== 0) {
+                page.style.opacity = '0';
+                page.style.transform = index > 0 ? 'rotateY(90deg) translateX(100%)' : 'rotateY(-90deg) translateX(-100%)';
+            }
+        });
+
+        // Prevent pull-to-refresh on mobile
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.book-container')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Heart recycling for background
+        setInterval(function() {
+            var hearts = heartsContainer.querySelectorAll('.heart');
+            if (hearts.length < 8) {
+                createBackgroundHearts();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
